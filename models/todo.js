@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 // установка схемы
-const userScheme = new Schema({
+//схема отвечает за задачу, так что лучше назвать подходяще
+const todoScheme = new Schema({
     name: String,
     day: Number,
     month: Number,
@@ -10,4 +11,5 @@ const userScheme = new Schema({
     minute: Number,
     id: String
 });
-module.exports = mongoose.model("User", userScheme);
+
+module.exports = mongoose.model("todo", todoScheme, 'todo');

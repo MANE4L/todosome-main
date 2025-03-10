@@ -1,24 +1,20 @@
-const MongoClient = require("mongodb").MongoClient;
-    
+// странно, что модели прописаны на mongoose, а подключаешься через mongodb
+const mongoose = require("mongoose");
+
+// по дефолту, если не указал путь до коллекции, к которой хочешь подключиться, монга будет подключать к test
+// либо нужно укзаать mongodb://127.0.0.1:27017/todo <-
 const url = "mongodb://127.0.0.1:27017/";
-const mongoClient = new MongoClient(url);
-async function run() {
+
+async function connect() {
     try {
         // Подключаемся к серверу
-        await mongoClient.connect();
-        // обращаемся к базе данных admin
-        const db = mongoClient.db("admin");
-        // выполняем пинг для проверки подключения
-        const result = await db.command({ ping: 1 });
-        console.log("Подключение с сервером успешно установлено");
-        console.log(result);
+        await mongoose.connect(url);
+
+        console.log("mongodb connected on", url);
     }catch(err) {
         console.log("Возникла ошибка");
         console.log(err);
-    } finally {
-        // Закрываем подключение при завершении работы или при ошибке
-        await mongoClient.close();
-        console.log("Подключение закрыто");
     }
 }
-run().catch(console.error);
+
+module.exports = connect
