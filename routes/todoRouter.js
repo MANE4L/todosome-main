@@ -15,7 +15,7 @@ const todoRouter = express.Router();
 // которые будут указывать на действие с сущностью
 todoRouter.get("/", todoController.getTodos);
 todoRouter.get("/:id", todoController.getId);
-todoRouter.delete("/", todoController.deleteTodo);
+todoRouter.delete("/:id", todoController.deleteTodo);
 todoRouter.put("/", todoController.modifyTodo);
 todoRouter.post("/", todoController.postTodo);
  

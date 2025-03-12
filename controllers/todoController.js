@@ -55,7 +55,7 @@ exports.postTodo = async(req, res)=> {
     }
 };
        
-exports.deleteTodo = async(req, res)=>{
+exports.deleteTodo = async(req, res)=> {
     try{
         const id = req.params.id;
         const todo = await Todo.findOneAndDelete({_id: id});
@@ -71,7 +71,7 @@ exports.deleteTodo = async(req, res)=>{
 exports.modifyTodo = async(req, res)=>{
     if(!req.body) return res.sendStatus(400);
 
-    const {name, day, month, year, hour, minute} = req.body
+    const {id, name, day, month, year, hour, minute} = req.body
     // const userName = req.body.name;
     // const userDay = req.body.day;
     // const userMonth = req.body.month;
@@ -80,11 +80,10 @@ exports.modifyTodo = async(req, res)=>{
     // const userMinute = req.body.minute;
           
     try{
-        const id = new objectId(req.body.id);
         const todo = await Todo.findOneAndUpdate({_id: id}, { $set: {name, day, month, year, hour, minute}},
          {returnOriginal: true });
         if(todo) res.send(todo);
-        else res.sendStatus(404);
+        else res.sendStatus(404); 
     }
     catch(err){
         console.log(err);

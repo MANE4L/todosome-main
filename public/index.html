@@ -27,7 +27,7 @@
 
 <body>
     <h2>To Do Some</h2>
-    <form name="userForm" action="postUser" method="POST">
+    <form name="userForm" />
         <input type="hidden" name="id" value="0" />
         <p>
             <label>Задача:</label><br>
@@ -89,23 +89,19 @@
             }
         }
         // Получение одного пользователя
-        async function GetUser(id) {
-            const response = await fetch("/api/users/" + id, {
-                action: "getUser",
-                method: "GET",
-                headers: { "Accept": "application/json" }
-            });
-            if (response.ok === true) {
-                const user = await response.json();
+        async function GetTodo(id) {
+            const response = await fetch("/api/todo/" + id); 
+            if (response.ok === true){ 
+                const todo = await response.json();
                 const form = document.forms["userForm"];
-                form.elements["id"].value = user._id;
-                form.elements["name"].value = user.name;
-                form.elements["day"].value = user.day;
-                form.elements["month"].value = user.month;
-                form.elements["year"].value = user.year;
-                form.elements["hour"].value = user.hour;
-                form.elements["minute"].value = user.minute;
-            }
+                form.elements["id"].value = todo._id;
+                form.elements["name"].value = todo.name;
+              form.elements["day"].value = todo.day;
+               form.elements["month"].value = todo.month;
+                form.elements["year"].value = todo.year;
+                form.elements["hour"].value = todo.hour;
+                form.elements["minute"].value = todo.minute;
+            } 
         }
         // Добавление пользователя
         async function CreateTodo(name, day, month, year, hour, minute) {
@@ -130,38 +126,36 @@
                 tbody.append(row(todo));
             }
         }
-        // Изменение пользователя
-        async function EditUser(userId, userName, userDay, userMonth, userYear, userHour, userMinute) {
-            const response = await fetch("api/users", {
-                action: "modifyUser",
+      //   Изменение пользователя
+            async function EditTodo(id, name, day, month, year, hour, minute) {
+            const response = await fetch("api/todo", {
                 method: "PUT",
                 headers: { "Accept": "application/json", "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    id: userId,
-                    name: userName,
-                    day: parseInt(userDay, 10),
-                    month: parseInt(userMonth, 10),
-                    year: parseInt(userYear, 10),
-                    hour: parseInt(userHour, 10),
-                    minute: parseInt(userMinute, 10)
+                    id: id,
+                    name: name,
+                    day: parseInt(day, 10),
+                    month: parseInt(month, 10),
+                    year: parseInt(year, 10),
+                    hour: parseInt(hour, 10),
+                    minute: parseInt(minute, 10)
                 })
             });
             if (response.ok === true) {
-                const user = await response.json();
+                const todo = await response.json();
                 reset();
-                document.querySelector(`tr[data-rowid="${user._id}"]`).replaceWith(row(user));
+               document.querySelector(`tr[data-rowid="${todo._id}"]`).replaceWith(row(todo));
             }
         }
         // Удаление пользователя
-        async function DeleteUser(id) {
-            const response = await fetch("/api/users/" + id, {
-                action: "deleteUser",
+        async function DeleteTodo(id) {
+            const response = await fetch("/api/todo/" + id, {
                 method: "DELETE",
                 headers: { "Accept": "application/json" }
             });
             if (response.ok === true) {
-                const user = await response.json();
-                document.querySelector(`tr[data-rowid="${user._id}"]`).remove();
+                const todo = await response.json();
+                document.querySelector(`tr[data-rowid="${todo._id}"]`).remove();
             }
         }
 
@@ -173,54 +167,54 @@
             form.elements["id"].value = 0;
         }
         // создание строки для таблицы
-        function row(user) {
+        function row(todo) {
 
             const tr = document.createElement("tr");
-            tr.setAttribute("data-rowid", user._id);
+            tr.setAttribute("data-rowid", todo._id);
 
             const nameTd = document.createElement("td");
-            nameTd.append(user.name);
+            nameTd.append(todo.name);
             tr.append(nameTd);
 
             const dayTd = document.createElement("td");
-            dayTd.append(user.day);
+            dayTd.append(todo.day);
             tr.append(dayTd);
 
             const monthTd = document.createElement("td");
-            monthTd.append(user.month);
+            monthTd.append(todo.month);
             tr.append(monthTd);
 
             const yearTd = document.createElement("td");
-            yearTd.append(user.year);
+            yearTd.append(todo.year);
             tr.append(yearTd);
 
             const hourTd = document.createElement("td");
-            hourTd.append(user.hour);
+            hourTd.append(todo.hour);
             tr.append(hourTd);
 
             const minuteTd = document.createElement("td");
-            minuteTd.append(user.minute);
+            minuteTd.append(todo.minute);
             tr.append(minuteTd);
 
             const linksTd = document.createElement("td");
 
             const editLink = document.createElement("a");
-            editLink.setAttribute("data-id", user._id);
+            editLink.setAttribute("data-id", todo._id);
             editLink.setAttribute("class", "btn");
             editLink.append("Изменить");
             editLink.addEventListener("click", e => {
                 e.preventDefault();
-                GetUser(user._id);
+                GetTodo(todo._id);
             });
             linksTd.append(editLink);
 
             const removeLink = document.createElement("a");
-            removeLink.setAttribute("data-id", user._id);
+            removeLink.setAttribute("data-id", todo._id);
             removeLink.setAttribute("class", "btn");
             removeLink.append("Удалить");
             removeLink.addEventListener("click", e => {
                 e.preventDefault();
-                DeleteUser(user._id);
+                DeleteTodo(todo._id);
             });
 
             linksTd.append(removeLink);
@@ -249,7 +243,7 @@
             if (id == 0)
                 CreateTodo(name, day, month, year, hour, minute);
             else
-                EditUser(id, name, day, month, year, hour, minute);
+                EditTodo(id, name, day, month, year, hour, minute);
         });
 
         // загрузка пользователей
